@@ -17,7 +17,21 @@ var productSchema = {
       name: String,
       salePrice: Number,
       originalPrice: Number,
-      defaultStyle: BOOLEAN
+      defaultStyle: BOOLEAN,
+      photos: [
+        {
+          url: String,
+          thumbnailUrl: String
+        }
+      ],
+      skuData : [
+        {
+          skuId: Number,
+          size: String,
+          quantity: Number
+        }
+      ]
     }
-  ]
+  ],
+  relatedProducts: [Number]
 }
