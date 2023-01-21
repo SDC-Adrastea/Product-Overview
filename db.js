@@ -1,86 +1,80 @@
-var mysql = require('mysql2');
-const Promise = require("bluebird");
+require("dotenv").config();
+const mongoose = require("mongoose");
+mongoose.set("strictQuery", false);
 
-const connection = mysql.createConnection({
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASS,
-  database: process.env.DB_NAME
+// 1. Use mongoose to establish a connection to MongoDB
+mongoose.connect('mongodb://localhost:27017/products');
+
+// 2. Set up any schema and models needed by the app
+const productSchema = new mongoose.Schema({
+  productId: Number,
+  name: String,
+  slogan: String,
+  description: String,
+  category: String,
+  defaultPrice: Number,
+  features: [
+    {
+      feature: String,
+      value: String
+    }
+  ],
+  styles: [
+    {
+      styleId: Number,
+      name: String,
+      salePrice: Number,
+      originalPrice: Number,
+      defaultStyle: Boolean,
+      photos: [
+        {
+          url: String,
+          thumbnailUrl: String
+        }
+      ],
+      skuData : [
+        {
+          skuId: Number,
+          size: String,
+          quantity: Number
+        }
+      ]
+    }
+  ],
+  relatedProducts: [Number]
 });
 
-const db = Promise.promisifyAll(connection, { multiArgs: true });
+// 3. Export the models
+const Product = new mongoose.model('Product', productSchema);
 
-db.connectAsync()
-  .then(() => console.log(`Connected to MySQL as id: ${db.threadId}`))
-  .then(() => {
-    return db.queryAsync(
-      `CREATE TABLE IF NOT EXISTS products (
-        id INT NOT NULL AUTO_INCREMENT,
-        name VARCHAR(200),
-        slogan VARCHAR(200),
-        description VARCHAR(200),
-        category VARCHAR(200),
-        default_price FLOAT,
-        PRIMARY KEY (ID)
-      )`
-    );
-  }).then(() => {
-    return db.queryAsync(
-      `CREATE TABLE IF NOT EXISTS features (
-        id INT NOT NULL AUTO_INCREMENT,
-        product_id INT,
-        feature VARCHAR(200),
-        value VARCHAR(200),
-        PRIMARY KEY(id),
-        FOREIGN KEY(product_id) REFERENCES products(id)
-      )`
-    );
-  }).then(() => {
-    return db.queryAsync(
-      `CREATE TABLE IF NOT EXISTS styles (
-        id INT NOT NULL AUTO_INCREMENT,
-        product_id INT,
-        name VARCHAR(200),
-        original_price DECIMAL(15,2),
-        sale_price DECIMAL(15,2),
-        default_item BOOLEAN,
-        PRIMARY KEY(id),
-        FOREIGN KEY(product_id) REFERENCES products(id)
-      )`
-    );
-  }).then(() => {
-    return db.queryAsync(
-      `CREATE TABLE IF NOT EXISTS photos (
-        id INT NOT NULL AUTO_INCREMENT,
-        style_id INT,
-        url VARCHAR(200),
-        thumbnail_vr VARCHAR(200),
-        PRIMARY KEY(id),
-        FOREIGN KEY(style_id) REFERENCES styles(id)
-      )`
-    );
-  }).then(() => {
-    return db.queryAsync(
-      `CREATE TABLE IF NOT EXISTS skus (
-        id INT,
-        style_id INT,
-        size VARCHAR(200),
-        quantity INT,
-        PRIMARY KEY(id),
-        FOREIGN KEY(style_id) REFERENCES styles(id)
-      )`
-    );
-  }).then(() => {
-    return db.queryAsync(
-      `CREATE TABLE IF NOT EXISTS related (
-        id INT NOT NULL AUTO_INCREMENT,
-        product_id INT,
-        related_product_id INT,
-        PRIMARY KEY(id),
-        FOREIGN KEY(product_id) REFERENCES products(id)
-      )`
-    );
-  })
-  .catch((err) => console.log(err));
+var getAll = () => {
+  return Product.find();
+}
 
-module.exports = db;
+// var search = (word) => {
+//   return Product.find({word: {"$regex": word}}).select('word definition -_id');
+// }
+
+var add = () => {
+  var newProduct = new Product({
+    productId: 5,
+    name: 'asdf'
+  });
+  return newProduct.save();
+}
+
+// var update = (data) => {
+//   return Word.findOneAndUpdate({word: data.word},{word: data.newWord, definition: data.definition});
+// };
+
+// var deleteWord = (data) => {
+//   return Word.deleteOne({word: data.word});
+// }
+
+// 4. Import the models into any modules that need them
+module.exports.Product = Product;
+module.exports.getAll = getAll;
+module.exports.add = add;
+// module.exports.search = search;
+// module.exports.update = update;
+// module.exports.deleteWord = deleteWord;
