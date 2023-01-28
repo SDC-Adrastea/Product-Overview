@@ -10,7 +10,7 @@ const db = mongoose.connection;
 db.on('error', (err) => console.error(err))
 db.once('open', () => console.log(`Connected to ${DB_NAME}`))
 
-// 3. Export the models
+// 2. Setup model
 const productSchema = new mongoose.Schema({});
 const Products = mongoose.model('Products', productSchema, 'prodAggTestFinal');
 
@@ -32,7 +32,6 @@ var getOneProduct = (id) => {
         "default_price": result.default_price.toString(),
         "features": features
       }
-      console.log(formattedResult);
       return formattedResult;
     })
 }
@@ -49,7 +48,6 @@ var getProductStyles = (id) => {
         })
         let skus = {}
         style.skus.forEach(sku => {
-          console.log(sku)
           skus[sku.id] = {quantity: sku.quantity, size: sku.size.toString()}
         })
         styles.push({
@@ -66,12 +64,23 @@ var getProductStyles = (id) => {
         "product_id": result.id.toString(),
         "results": styles
       }
-      console.log(formattedResult);
       return formattedResult;
     })
 }
 
+var getRelated = (id) => {
+  return Products.find({id: id})
+  .then(result => {
+    result = result[0]._doc;
+    let related = [];
+    result.related.forEach(item => {
+      related.push(item.related_product_id)
+    })
+    return related;
+  })
+}
 
 // 4. Import the models into any modules that need them
 module.exports.getOneProduct = getOneProduct;
 module.exports.getProductStyles = getProductStyles;
+module.exports.getRelated = getRelated;
