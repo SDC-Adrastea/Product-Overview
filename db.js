@@ -10,86 +10,68 @@ const db = mongoose.connection;
 db.on('error', (err) => console.error(err))
 db.once('open', () => console.log(`Connected to ${DB_NAME}`))
 
-// 2. Set up any schema and models needed by the app
-// const productSchema = new mongoose.Schema({
-//   id: Number,
-//   name: String,
-//   slogan: String,
-//   description: String,
-//   category: String,
-//   default_price: Number,
-//   related: [
-//     {
-//       id: Number,
-//       current_product_id: Number,
-//       related_product_id: Number
-//     }
-//   ],
-//   features: [
-//     {
-//       id: Number,
-//       product_id: Number,
-//       feature: String,
-//       value: String
-//     }
-//   ],
-//   styles: [
-//     {
-//       id: Number,
-//       productId: Number,
-//       name: String,
-//       sale_price: Number,
-//       original_price: Number,
-//       default_style: Number,
-//       skuData : [
-//         {
-//           id: Number,
-//           styleId: Number,
-//           size: String,
-//           quantity: Number
-//         }
-//       ],
-//       photos: [
-//         {
-//           id: Number,
-//           url: String,
-//           thumbnail_url: String
-//         }
-//       ]
-//     }
-//   ]
-// });
-
-// // 3. Export the models
+// 3. Export the models
 const productSchema = new mongoose.Schema({});
 const Products = mongoose.model('Products', productSchema, 'prodAggTestFinal');
-// const Products = mongoose.model('prodAggTestFinal', productSchema);
 
 
-var getProduct = (id) => {
-  // console.log(id)
+var getOneProduct = (id) => {
   return Products.find({id: id})
     .then(result => {
       result = result[0]._doc;
-
+      let features = [];
+      result.features.forEach(feature => {
+        features.push({feature: feature.feature, value: feature.value})
+      })
       let formattedResult = {
         "id": result.id,
         "name": result.name,
         "slogan": result.slogan,
         "description": result.description,
         "category": result.category,
-        "default_price": result.default_price,
-        "features": result.features
+        "default_price": result.default_price.toString(),
+        "features": features
       }
       console.log(formattedResult);
       return formattedResult;
+    })
+}
 
-      // console.log(result);
-      // return result;
+var getProductStyles = (id) => {
+  return Products.find({id: id})
+    .then(result => {
+      result = result[0]._doc;
+      let styles = [];
+      result.styles.forEach(style => {
+        let photos = []
+        style.photos.forEach(photo => {
+          photos.push({thumbnail_url: photo.thumbnail_url, url: photo.url})
+        })
+        let skus = {}
+        style.skus.forEach(sku => {
+          console.log(sku)
+          skus[sku.id] = {quantity: sku.quantity, size: sku.size.toString()}
+        })
+        styles.push({
+          style_id: style.id,
+          name: style.name,
+          original_price: style.original_price,
+          sale_price: style.sale_price,
+          'default?': !!style.default_style,
+          photos: photos,
+          skus: skus
+        })
+      })
+      let formattedResult = {
+        "product_id": result.id.toString(),
+        "results": styles
+      }
+      console.log(formattedResult);
+      return formattedResult;
     })
 }
 
 
 // 4. Import the models into any modules that need them
-// module.exports.Products = Products;
-module.exports.getProduct = getProduct;
+module.exports.getOneProduct = getOneProduct;
+module.exports.getProductStyles = getProductStyles;

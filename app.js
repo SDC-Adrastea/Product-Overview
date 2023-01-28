@@ -2,9 +2,8 @@ require('dotenv').config();
 
 const express = require('express');
 const app = express();
-const db = require("./db.js");
 
-const getProduct = require('./db').getProduct;
+const {getOneProduct, getProductStyles} = require('./db');
 app.use(express.json());
 
 app.get('/', (req, res) => {
@@ -57,7 +56,7 @@ app.get('/products', (req, res) => {
 
 app.get('/products/:product_id', (req, res) => {
   let id = parseInt(req.params.product_id);
-  getProduct(id)
+  getOneProduct(id)
   .then(product => {
     res.send(product);
   });
@@ -87,8 +86,13 @@ app.get('/products/:product_id', (req, res) => {
   // }
 })
 
-app.get(' /products/:product_id/styles', (req, res) => {
-
+app.get('/products/:product_id/styles', (req, res) => {
+  console.log('hi')
+  let id = parseInt(req.params.product_id);
+  getProductStyles(id)
+  .then(product => {
+    res.send(product);
+  });
   // param:
   //    product_id: int, id of requested product
 
