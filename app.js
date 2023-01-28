@@ -4,25 +4,22 @@ const express = require('express');
 const app = express();
 const db = require("./db.js");
 
-const dbGetAll = require('./db').getAll;
-const dbAdd = require('./db').add;
+const getProduct = require('./db').getProduct;
 
 
 app.get('/', (req, res) => {
-  dbAdd()
-  .then(() => {
-    dbGetAll()
-    .then((data) => {
-      console.log(data);
-      res.send(data);
-    })
-    .catch((err) => {
-      res.send(err)
-    })
-  })
+  // getProduct(6)
+  // .then(product => {
+  //   res.send(product);
+  // })
 })
 
 app.get('/products', (req, res) => {
+
+  getProduct(6)
+  .then(product => {
+    res.send(product);
+  })
 
   // param:
   //    page: int, default 1, selects page of result to return

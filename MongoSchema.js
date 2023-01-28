@@ -1,37 +1,48 @@
 var productSchema = {
-  productId: Number,
+  id: Number,
   name: String,
   slogan: String,
   description: String,
   category: String,
-  defaultPrice: Number,
+  default_price: Number,
+  related: [
+    {
+      id: Number,
+      current_product_id: Number,
+      related_product_id: Number
+    }
+  ],
   features: [
     {
+      id: Number,
+      product_id: Number,
       feature: String,
       value: String
     }
   ],
   styles: [
     {
-      styleId: Number,
+      id: Number,
+      productId: Number,
       name: String,
-      salePrice: Number,
-      originalPrice: Number,
-      defaultStyle: BOOLEAN,
-      photos: [
-        {
-          url: String,
-          thumbnailUrl: String
-        }
-      ],
+      sale_price: Number,
+      original_price: Number,
+      default_style: Number,
       skuData : [
         {
-          skuId: Number,
+          id: Number,
+          styleId: Number,
           size: String,
           quantity: Number
         }
+      ],
+      photos: [
+        {
+          id: Number,
+          url: String,
+          thumbnail_url: String
+        }
       ]
     }
-  ],
-  relatedProducts: [Number]
+  ]
 }
