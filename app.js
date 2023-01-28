@@ -5,7 +5,7 @@ const app = express();
 const db = require("./db.js");
 
 const getProduct = require('./db').getProduct;
-
+app.use(express.json());
 
 app.get('/', (req, res) => {
   // getProduct(6)
@@ -56,6 +56,11 @@ app.get('/products', (req, res) => {
 })
 
 app.get('/products/:product_id', (req, res) => {
+  let id = parseInt(req.params.product_id);
+  getProduct(id)
+  .then(product => {
+    res.send(product);
+  });
 
   // param:
   //    product_id: int, id of requested product

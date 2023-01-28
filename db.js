@@ -67,10 +67,25 @@ const Products = mongoose.model('Products', productSchema, 'prodAggTestFinal');
 
 
 var getProduct = (id) => {
+  // console.log(id)
   return Products.find({id: id})
     .then(result => {
-      console.log(result);
-      return result;
+      result = result[0]._doc;
+
+      let formattedResult = {
+        "id": result.id,
+        "name": result.name,
+        "slogan": result.slogan,
+        "description": result.description,
+        "category": result.category,
+        "default_price": result.default_price,
+        "features": result.features
+      }
+      console.log(formattedResult);
+      return formattedResult;
+
+      // console.log(result);
+      // return result;
     })
 }
 
