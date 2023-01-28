@@ -87,7 +87,6 @@ app.get('/products/:product_id', (req, res) => {
 })
 
 app.get('/products/:product_id/styles', (req, res) => {
-  console.log('hi')
   let id = parseInt(req.params.product_id);
   getProductStyles(id)
   .then(product => {
