@@ -15,6 +15,32 @@ const productSchema = new mongoose.Schema({});
 const Products = mongoose.model('Products', productSchema, 'prodAggTestFinal');
 
 
+var getProducts = (page, count) => {
+  return new Promise(async (resolve, reject) => {
+    var result = [];
+    var start = count * page - count + 1
+    for (let i = start; i < start + count; i++) {
+      Products.find({id: i})
+      .then(result => {
+        result = result[0]._doc;
+        let features = [];
+        result.features.forEach(feature => {
+          features.push({feature: feature.feature, value: feature.value})
+        })
+        let formattedResult = {
+          "id": result.id,
+          "name": result.name,
+          "slogan": result.slogan,
+          "description": result.description,
+          "category": result.category,
+          "default_price": result.default_price.toString(),
+        }
+        result.push(forEach);
+      })
+    }
+    resolve(result);
+  })
+}
 var getOneProduct = (id) => {
   return Products.find({id: id})
     .then(result => {
@@ -81,6 +107,7 @@ var getRelated = (id) => {
 }
 
 // 4. Import the models into any modules that need them
+module.exports.getProducts = getProducts;
 module.exports.getOneProduct = getOneProduct;
 module.exports.getProductStyles = getProductStyles;
 module.exports.getRelated = getRelated;

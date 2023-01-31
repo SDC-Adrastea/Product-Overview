@@ -3,17 +3,19 @@ require('dotenv').config();
 const express = require('express');
 const app = express();
 
-const {getOneProduct, getProductStyles, getRelated} = require('./db');
+const {getProducts, getOneProduct, getProductStyles, getRelated} = require('./db');
 app.use(express.json());
 
 app.get('/', (req, res) => {
 })
 
 app.get('/products', (req, res) => {
-// NEED TO DO
-  getProduct(6)
-  .then(product => {
-    res.send(product);
+  let page = req.params.page;
+  let count = req.params.count;
+  getProducts(page, count)
+  .then(products => {
+    console.log(products);
+    res.send(products);
   })
 })
 
