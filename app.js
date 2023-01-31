@@ -10,11 +10,10 @@ app.get('/', (req, res) => {
 })
 
 app.get('/products', (req, res) => {
-  let page = req.params.page;
-  let count = req.params.count;
+  let page = parseInt(req.query.page) || 1;
+  let count = parseInt(req.query.count) || 5;
   getProducts(page, count)
   .then(products => {
-    console.log(products);
     res.send(products);
   })
 })
