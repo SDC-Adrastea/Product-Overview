@@ -15,3 +15,35 @@ describe('server endpoint /', () => {
     expect(res.text).toEqual("Hello World!")
   })
 })
+
+describe('server endpoint /products/', () => {
+  test('should return an item', async () => {
+    const res = await request(app)
+      .get('/products/')
+    expect(res.statusCode).toEqual(200)
+  })
+})
+
+describe('server endpoint /products/:id', () => {
+  test('should return an item', async () => {
+    const res = await request(app)
+      .get('/products/6969/')
+    expect(res.statusCode).toEqual(200)
+  })
+})
+
+describe('server endpoint /products/:id/styles', () => {
+  test('should return an item', async () => {
+    const res = await request(app)
+      .get('/products/6969/styles')
+    expect(res.statusCode).toEqual(200)
+  })
+})
+
+describe('server endpoint /products/:id/related', () => {
+  test('should return an item', async () => {
+    const res = await request(app)
+      .get('/products/6969/related')
+    expect(res.statusCode).toEqual(200)
+  })
+})

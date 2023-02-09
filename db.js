@@ -14,7 +14,6 @@ db.once('open', () => console.log(`Connected to ${DB_NAME}`))
 const productSchema = new mongoose.Schema({});
 const Products = mongoose.model('Products', productSchema, 'prodAggTestFinal');
 
-
 var getProducts = (page, count) => {
   var products = [];
   var promises = [];

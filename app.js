@@ -1,12 +1,17 @@
 require('dotenv').config();
 
 const express = require('express');
+const cors = require('cors');
 const app = express();
+app.use(cors({
+  origin: '*'
+}));
 
 const {getProducts, getOneProduct, getProductStyles, getRelated} = require('./db');
 app.use(express.json());
 
 app.get('/', (req, res) => {
+  res.send('Hello World!')
 })
 
 app.get('/products', (req, res) => {
@@ -38,6 +43,7 @@ app.get('/products/:product_id/related', (req, res) => {
   let id = parseInt(req.params.product_id);
   getRelated(id)
   .then(related => {
+    console.log('related',related)
     res.send(related);
   });
 })
