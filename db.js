@@ -3,10 +3,14 @@ const mongoose = require("mongoose");
 mongoose.set("strictQuery", false);
 
 const DB_NAME = process.env.DB_NAME;
+const DB_USER = process.env.DB_USER;
+const DB_PASS = process.env.DB_PASS;
+const DB_HOST = process.env.DB_HOST;
 
 // 1. Use mongoose to establish a connection to MongoDB
-mongoose.connect(`mongodb://localhost:27017/${DB_NAME}`);
+mongoose.connect(`mongodb://${DB_USER}:${DB_PASS}@${DB_HOST}/${DB_NAME}`);
 const db = mongoose.connection;
+
 db.on('error', (err) => console.error(err))
 db.once('open', () => console.log(`Connected to ${DB_NAME}`))
 
