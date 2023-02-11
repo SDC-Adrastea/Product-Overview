@@ -10,6 +10,7 @@ const DB_HOST = process.env.DB_HOST;
 // 1. Use mongoose to establish a connection to MongoDB
 mongoose.connect(`mongodb://${DB_USER}:${DB_PASS}@${DB_HOST}/${DB_NAME}`);
 const db = mongoose.connection;
+
 db.on('error', (err) => console.error(err))
 db.once('open', () => console.log(`Connected to ${DB_NAME}`))
 
