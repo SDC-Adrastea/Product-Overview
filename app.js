@@ -10,10 +10,6 @@ app.use(cors({
 const {getProducts, getOneProduct, getProductStyles, getRelated} = require('./db');
 app.use(express.json());
 
-app.get('/', (req, res) => {
-  res.send('Hello World!')
-})
-
 app.get('/products', (req, res) => {
   let page = parseInt(req.query.page) || 1;
   let count = parseInt(req.query.count) || 5;
